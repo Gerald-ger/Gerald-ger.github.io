@@ -1,36 +1,92 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# gerald-ger.github.io
 
-## Getting Started
+My personal website: one site that reads differently for finance, chemical engineering,
+environmental engineering and software roles, plus a timeline of everything I've done.
 
-First, run the development server:
+Live at **https://gerald-ger.github.io** once deployed.
+
+## Links to send
+
+Each lens is a real page with its own headline, project order, CV and hero simulation, so
+paste the one that matches the application:
+
+| Lens | URL | CV it offers |
+|---|---|---|
+| All | `/` | a menu with every version |
+| Finance | `/finance/` | Finance and business |
+| Chemical engineering | `/chemical/` | Chemical engineering |
+| Environmental engineering | `/environmental/` | Environmental engineering |
+| Software and AI | `/software/` | Finance and business (no software CV yet) |
+
+## Running it
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev        # http://localhost:3000
+npm run build      # static site in out/
+npm run preview    # serve out/ locally
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+`npm run dev` and `npm run build` first download the Satoshi font into `public/fonts/`
+(see "Fonts" below), so the first run needs an internet connection.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Editing content
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Everything you'd normally change lives in `src/content/`. You shouldn't need to touch
+the components.
 
-## Learn More
+| File | What it holds |
+|---|---|
+| `site.ts` | name, email, GitHub, and which PDF each CV button downloads |
+| `lenses.ts` | per-lens headline, subline, project order, numbers and simulation |
+| `projects.ts` | the six projects: home-page panels and the full case studies |
+| `timeline.ts` | the life-recap timeline, newest first |
+| `about.ts` | About page story, courses and grades, skills, beyond work |
 
-To learn more about Next.js, take a look at the following resources:
+**Add a timeline entry:** copy an entry in `timeline.ts`, give it a new `id`, a `date` in
+`YYYY-MM` form, and the `lenses` it belongs to (or `"all"`). Set `highlight: true` to show
+it in "Recent milestones" on the home page.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Add a project:** add an object to `projects` in `projects.ts`, add its slug to the
+`ProjectSlug` type, then add the slug to each lens's `order` in `lenses.ts`. The case
+study page at `/work/<slug>/` is generated automatically.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**Update a CV:** export from Canva, **remove the phone number**, and save over the file
+in `public/cv/` with the same name.
 
-## Deploy on Vercel
+**Images** live in `public/images/`. Use WebP around 1,400 px wide, and set the real
+`width` and `height` in the content file.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## How it's built
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Next.js 16 static export (`output: "export"`), Tailwind CSS v4, Motion
+- Light and dark themes follow the visitor's system until they pick one
+- The hero simulations are plain canvas code in `src/sims/`:
+  - `packedBed.ts`: gas through a packed bed, as in my packed-bed-transport model
+  - `dcf.ts`: cash flows discounted back to today at 9.7%
+  - `reactor.ts`: H₂O₂ decomposing on MnO₂, as in the RedBird simulator
+  - `tests.ts`: the 1,061 tests behind Auditable Valuation
+
+  They pause off-screen, recolour with the theme, and show a still frame for visitors who
+  prefer reduced motion. Their captions say "Simulated" or "Illustration" because they
+  are drawings of the models, not the models themselves.
+
+## Deploying
+
+Pushing to `main` runs `.github/workflows/deploy.yml`, which builds the site on Ubuntu
+and publishes it to GitHub Pages. One-time setup in the repository: **Settings → Pages →
+Source: GitHub Actions**.
+
+## Fonts
+
+Satoshi is free to use and self-host, but its licence (ITF Free Font License) does not
+allow redistributing the font files through a public repository. So `scripts/fetch-fonts.mjs`
+downloads it from Fontshare at build time into `public/fonts/`, which is git-ignored. If
+the download ever fails, the site falls back to the system font. JetBrains Mono comes
+from Google Fonts via `next/font`.
+
+## Windows note
+
+Next.js 16.4 writes some prefetch files incorrectly when building on Windows.
+`scripts/fix-segment-paths.mjs` runs after every build and corrects them. On Linux and
+macOS, including the deploy, it finds nothing to fix.

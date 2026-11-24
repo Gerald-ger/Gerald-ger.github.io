@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Satoshi is downloaded at build time (Fontshare licence forbids redistributing it in a public repo)
+/public/fonts/
