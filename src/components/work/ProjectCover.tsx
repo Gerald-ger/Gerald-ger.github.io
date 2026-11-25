@@ -9,17 +9,22 @@ export function ProjectCover({ cover, className = "" }: { cover: Cover; classNam
   switch (cover.kind) {
     case "shot": {
       const f = cover.figure;
+      // The screenshot sits in an absolutely positioned layer so its pixel size never feeds
+      // back into the cover's height. In flow, its 112% height counted as the image's full
+      // natural height while the row was sized, which made a home-page panel 976px tall.
       return (
-        <div className={`relative overflow-hidden pt-7 pl-7 ${f.tone === "dark" ? "bg-well" : "bg-surface-2"} ${className}`}>
-          <img
-            src={f.src}
-            alt={f.alt}
-            width={f.width}
-            height={f.height}
-            loading="lazy"
-            decoding="async"
-            className="h-[112%] w-auto max-w-none origin-top-left rounded-tl-[10px] shadow-[0_30px_60px_-30px_rgb(0_0_0/0.6)] transition-transform duration-[1200ms] ease-out-expo group-hover:scale-[1.03]"
-          />
+        <div className={`relative overflow-hidden ${f.tone === "dark" ? "bg-well" : "bg-surface-2"} ${className}`}>
+          <div className="absolute inset-0 pt-7 pl-7">
+            <img
+              src={f.src}
+              alt={f.alt}
+              width={f.width}
+              height={f.height}
+              loading="lazy"
+              decoding="async"
+              className="h-[112%] w-auto max-w-none origin-top-left rounded-tl-[10px] shadow-[0_30px_60px_-30px_rgb(0_0_0/0.6)] transition-transform duration-[1200ms] ease-out-expo group-hover:scale-[1.03]"
+            />
+          </div>
         </div>
       );
     }

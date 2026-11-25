@@ -137,8 +137,10 @@
   }
 }
 
-/* Project panels pin and stack as you scroll. --i is the panel's position in the current lens order. */
-@media (min-width: 1024px) {
+/* Project panels pin and stack as you scroll. --i is the panel's position in the current lens order.
+   Pinning needs a window tall enough to show a whole panel below the deepest pin line; on
+   shorter windows the panels scroll normally so nothing is hidden behind the next one. */
+@media (min-width: 1024px) and (min-height: 640px) {
   .stack-panel {
     position: sticky;
     top: calc(6.25rem + var(--i, 0) * 0.875rem);

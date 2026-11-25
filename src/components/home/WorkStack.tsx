@@ -69,7 +69,10 @@ export function WorkStack() {
           Ordered for <b className="font-bold text-accent-text">{L.phrase}</b>. Each one opens into a full case study.
         </p>
       </header>
-      <div className="grid gap-6 lg:gap-[5vh]">
+      {/* auto-rows-fr gives every panel the height of the tallest one. A pinned panel taller
+          than the panels after it runs out of room before the stack ends and gets pushed up
+          under the nav, so equal heights keep the whole stack pinned until the last panel. */}
+      <div className="grid gap-6 lg:auto-rows-fr lg:gap-[5vh]">
         {ordered.map((p, i) => (
           <ProjectPanel key={p.slug} project={p} index={i} lens={lens} />
         ))}
